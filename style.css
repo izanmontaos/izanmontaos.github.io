@@ -130,7 +130,6 @@ nav a.active {
     color: black;
     padding: 20px;
     display: flex;
-    justify-content: space-around;
 }
 
 .round-button {
@@ -139,25 +138,7 @@ nav a.active {
     padding: 10px;
     margin-right: 10px;
     cursor: pointer;
-    background-color: black;
+    background-color: blueviolet;
     color: white;
     font-size: 20px;
-}
-
-@media only screen and (max-width: 600px) {
-    header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .actions-dropdown {
-        margin-top: 10px;
-    }
-
-    .footer-buttons {
-        flex-direction: row;
-        justify-content: space-around;
-        position: static;
-        margin: 20px 0;
-    }
 }
