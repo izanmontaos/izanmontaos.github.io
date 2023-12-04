@@ -89,14 +89,14 @@ main {
 footer {
     background-color: #333;
     color: white;
-    padding: 20px;
+    padding: 10px;
     position: fixed;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 15px;
+    font-size: 10px;
 }
 
 nav {
@@ -124,7 +124,7 @@ nav a.active {
 
 .footer-buttons {
     position: fixed;
-    bottom: 10px;
+    bottom: 7px;
     margin-bottom: 30px;
     right: 0;
     background-color: grey;
