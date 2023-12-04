@@ -96,6 +96,7 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 15px;
 }
 
 nav {
@@ -123,7 +124,7 @@ nav a.active {
 
 .footer-buttons {
     position: fixed;
-    bottom: 0;
+    bottom: 7px;
     margin-bottom: 30px;
     right: 0;
     background-color: grey;
