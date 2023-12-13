@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Agenda</title>
 </head>
+
 <body>
     <header>
         <h1>Agenda</h1>
         <div class="actions-dropdown">
-            <div class="dropdown">
-                <button class="dropbtn">Acciones</button>
-                <div class="dropdown-content">
-                    <a href="#">Eliminar tareas completadas</a>
+            <div class="dropdown" role="menu">
+                <button class="dropbtn" aria-haspopup="true" aria-expanded="false" onclick="toggleDropdown()">Acciones</button>
+                <div class="dropdown-content" role="menuitem" style="display: none;">
+                    <a href="#" role="link" onclick="deleteAllCompletedTasks()">Eliminar tareas completadas</a>
                 </div>
             </div>
         </div>
@@ -21,33 +23,172 @@
 
     <main>
         <div class="task-container">
-            <div class="task">
+            <div class="task" role="listitem">
                 <div class="task-header">
-                    <button class="round-button">✓</button>
-                    <button class="round-button">✎</button>
-                    <button class="round-button">✖</button>
+                    <button class="round-button" role="button" aria-pressed="false" onclick="completeTask(this)">✓</button>
+                    <button class="round-button" role="button" onclick="editTask(this)">✎</button>
+                    <button class="round-button" role="button" onclick="deleteTask(this)">✖</button>
                 </div>
                 <h2>Tarea por defecto</h2>
                 <p>Descripción de la tarea por defecto.</p>
             </div>
         </div>
         <div class="footer-buttons">
-            <button class="round-button">+</button>
-            <button class="round-button">-</button>
+            <button class="round-button" role="button" onclick="createTask()">+</button>
+            
         </div>
-        
     </main>
-</body>
 
     <footer>
-        <nav>
-            <a href="#" class="active">Tareas</a>
-            <a href="#">Tareas completadas</a>
-            <a href="#">Tareas sin completar <span class="badge">1</span></a>
+        <nav role="navigation">
+            <a href="#" class="active" role="link" onclick="showAllTasks()">Tareas</a>
+            <a href="#" role="link" onclick="showCompletedTasks()">Tareas completadas</a>
+            <a href="#" role="link" onclick="showIncompleteTasks()">Tareas sin completar <span class="badge" aria-live="polite">1</span></a>
         </nav>
     </footer>
 
-    
+    <script>
+        const taskButtons = document.querySelectorAll('.task button');
 
+        taskButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const taskContainer = this.closest('.task');
+
+                if (this.textContent === '✓') {
+                    completeTask(this);
+                } else if (this.textContent === '✖') {
+                    deleteTask(this);
+                }
+            });
+        });
+
+        function createTask() {
+            const taskContainer = document.createElement('div');
+            taskContainer.classList.add('task');
+            taskContainer.setAttribute('role', 'listitem');
+
+            const taskHeader = document.createElement('div');
+            taskHeader.classList.add('task-header');
+
+            const completeButton = document.createElement('button');
+            completeButton.classList.add('round-button');
+            completeButton.setAttribute('role', 'button');
+            completeButton.setAttribute('aria-pressed', 'false');
+            completeButton.textContent = '✓';
+            completeButton.addEventListener('click', function () {
+                completeTask(this);
+            });
+
+            const editButton = document.createElement('button');
+            editButton.classList.add('round-button');
+            editButton.setAttribute('role', 'button');
+            editButton.textContent = '✎';
+            editButton.addEventListener('click', function () {
+                editTask(this);
+            });
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('round-button');
+            deleteButton.setAttribute('role', 'button');
+            deleteButton.textContent = '✖';
+            deleteButton.addEventListener('click', function () {
+                deleteTask(this);
+            });
+
+            taskHeader.appendChild(completeButton);
+            taskHeader.appendChild(editButton);
+            taskHeader.appendChild(deleteButton);
+
+            const taskTitle = document.createElement('h2');
+            taskTitle.textContent = 'Nueva Tarea';
+
+            const taskDescription = document.createElement('p');
+            taskDescription.textContent = 'Descripción de la nueva tarea.';
+
+            taskContainer.appendChild(taskHeader);
+            taskContainer.appendChild(taskTitle);
+            taskContainer.appendChild(taskDescription);
+
+            const taskList = document.querySelector('.task-container');
+            taskList.appendChild(taskContainer);
+
+            updateIncompleteTasksCount();
+        }
+
+        function completeTask(button) {
+            const taskContainer = button.closest('.task');
+            taskContainer.classList.toggle('completed');
+            button.setAttribute('aria-pressed', String(!taskContainer.classList.contains('completed')));
+
+            updateIncompleteTasksCount();
+        }
+
+        function deleteTask(button) {
+            const taskContainer = button.closest('.task');
+            taskContainer.remove();
+
+            updateIncompleteTasksCount();
+        }
+
+        function deleteAllCompletedTasks() {
+            const completedTasks = document.querySelectorAll('.task.completed');
+            completedTasks.forEach(task => task.remove());
+
+            updateIncompleteTasksCount();
+        }
+
+        function editTask(button) {
+            const taskContainer = button.closest('.task');
+            const titleElement = taskContainer.querySelector('h2');
+            const descriptionElement = taskContainer.querySelector('p');
+
+            const newTitle = prompt('Editar título:', titleElement.textContent);
+            const newDescription = prompt('Editar descripción:', descriptionElement.textContent);
+
+            titleElement.textContent = newTitle;
+            descriptionElement.textContent = newDescription;
+        }
+
+        function showAllTasks() {
+            const allTasks = document.querySelectorAll('.task');
+            allTasks.forEach(task => task.style.display = 'flex');
+        }
+
+        function showCompletedTasks() {
+            const allTasks = document.querySelectorAll('.task');
+            allTasks.forEach(task => {
+                if (task.classList.contains('completed')) {
+                    task.style.display = 'flex';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
+        }
+
+        function showIncompleteTasks() {
+            const allTasks = document.querySelectorAll('.task');
+            allTasks.forEach(task => {
+                if (!task.classList.contains('completed')) {
+                    task.style.display = 'flex';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
+        }
+
+        function updateIncompleteTasksCount() {
+            const incompleteTasks = document.querySelectorAll('.task:not(.completed)').length;
+            const badge = document.querySelector('.badge');
+            badge.textContent = incompleteTasks;
+            badge.setAttribute('aria-live', 'polite');
+        }
+
+        function toggleDropdown() {
+            const dropdownContent = document.querySelector('.dropdown-content');
+            dropdownContent.style.display = (dropdownContent.style.display === 'none' || dropdownContent.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+
+</body>
 
 </html>
